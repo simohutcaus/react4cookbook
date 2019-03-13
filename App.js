@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, FlatList, ScrollView, Image, TextInput} from 'react-native';
-import { Button, Card, ListItem } from 'react-native-elements';
+import { Button, Card, ListItem, Header } from 'react-native-elements';
 
 export default class App extends React.Component {
 
@@ -42,7 +42,13 @@ _onButtonPress() {
 
   render() {
     return (
+      
       <View style = {styles.container}>
+      <Header
+  leftComponent={{ icon: 'menu', color: '#fff', onPress: () => alert('pressed') }}
+  centerComponent={{ text: 'KITCHEN SINK', style: { color: '#fff' } }}
+  rightComponent={{ icon: 'home', color: '#fff' }}
+/>
       <View style = {styles.redbox}>
       </View>
       <View style={styles.yellowbox}>
@@ -110,7 +116,6 @@ const styles = StyleSheet.create ({
   container: {
      flexDirection: 'column',
      flex: 1,
-     justifyContent: 'space-around',
      alignItems: 'center',
      alignSelf: 'stretch',
      backgroundColor: 'white',
