@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, FlatList, ScrollView, Image, TextInput} from 'react-native';
-import { Button, Card, ListItem, Header } from 'react-native-elements';
+import { Button, Card, ListItem, Header, Badge, PricingCard, SocialIcon } from 'react-native-elements';
+import { createStackNavigator, createAppContainer, StackActions, NavigationActions } from 'react-navigation';
 
-export default class App extends React.Component {
+class App extends React.Component {
 
 constructor(props) {
   super(props)
@@ -13,7 +14,8 @@ constructor(props) {
   this.state = {
     label: 'test',
     items: [],
-    text: ''
+    text: '',
+    results: 0
   }
   
 
@@ -28,6 +30,7 @@ _handleButtonPress = () => {
     console.log(responseJson.movies[0].title);
     this.setState({label: responseJson.movies[0].title})
     this.setState({ items: responseJson.movies});
+    this.setState({results: responseJson.movies.length})
     console.log(this.state.items);
     return responseJson.movies;
   })
@@ -40,6 +43,10 @@ _onButtonPress() {
   console.log('pressed')
 }
 
+_OnButton2() {
+  alert('test');
+}
+
   render() {
     return (
       
@@ -50,11 +57,16 @@ _onButtonPress() {
   rightComponent={{ icon: 'home', color: '#fff' }}
 />
       <View style = {styles.redbox}>
+      <Badge value={this.state.results} status="success" />
+      <SocialIcon
+  type='twitch' onLongPress={this._OnButton2}
+/>
       </View>
+      <View></View>
       <View style={styles.yellowbox}>
       <ScrollView>
           <Text style={{fontSize:96}}>Scroll me plz</Text>
-          <Image source={{uri: "https://facebook.github.io/react-native/img/favicon.png", width: 64, height: 64}} />
+          <Image source={{uri: "https://cdn.images.express.co.uk/img/dynamic/73/590x/Formula-1-s-new-logo-905311.jpg", width: 512, height: 512 }} />
           <Image source={{uri: "https://facebook.github.io/react-native/img/favicon.png", width: 64, height: 64}} />
           <Image source={{uri: "https://facebook.github.io/react-native/img/favicon.png", width: 64, height: 64}} />
           <Image source={{uri: "https://facebook.github.io/react-native/img/favicon.png", width: 64, height: 64}} />
@@ -100,6 +112,17 @@ _onButtonPress() {
       <View style={styles.Button}>
       <Button title="Solid Button" onPress={this._handleButtonPress} style={styles.text}/>
       <Button title="Solid Button" onPress={this._handleButtonPress} style={styles.text}/>
+      <Button
+          title="Go to Details"
+          onPress={() => {
+            this.props.navigation.dispatch(StackActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Details' })
+              ],
+            }))
+          }}
+        />
       </View>
       </View>
       <View style={styles.yellowbox}>
@@ -112,6 +135,28 @@ _onButtonPress() {
   }
 }
 
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+        <Button
+          title="Go to Home"
+          onPress={() => {
+            this.props.navigation.dispatch(StackActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Home' })
+              ],
+            }))
+          }}
+        />
+      </View>
+      
+    );
+  }  
+}
+
 const styles = StyleSheet.create ({
   container: {
      flexDirection: 'column',
@@ -119,16 +164,20 @@ const styles = StyleSheet.create ({
      alignItems: 'center',
      alignSelf: 'stretch',
      backgroundColor: 'white',
+     justifyContent: 'space-around'
   },
   redbox: {
      width: '100%',
      height: 100,
-     backgroundColor: 'red'
+     backgroundColor: 'red',
+     justifyContent: 'space-around',  
+     alignItems: 'center'
   },
   text: {
     alignSelf: 'center'
 
   },
+
 
   bluebox: {
      width: '100%',
@@ -148,3 +197,16 @@ const styles = StyleSheet.create ({
      justifyContent: 'space-around'
   },
 })
+
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: App,
+  },
+  Details: {
+    screen: DetailsScreen
+  }
+}, {
+    initialRouteName: 'Home',
+});
+
+export default createAppContainer(AppNavigator);
